@@ -23,3 +23,4 @@ class TestProductModel:
         assert instance.__str__().startswith("Product_")
         assert instance.description == "dummy product description"
         assert instance.is_digital
+        assert instance.is_active
