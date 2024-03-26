@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -104,5 +105,7 @@ class ProductLine(models.Model):
     )
     is_active = models.BooleanField(default=False, help_text="is the product active")
     objects = ActiveManager()
-
+    order = models.PositiveIntegerField(
+        unique=True, blank=False, null=False, help_text="product line order"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
