@@ -1,4 +1,9 @@
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ModelViewSet
+from Ecommerce.utils.paginators import (
+    BrandPaginator,
+    CategoryPaginator,
+    ProductPaginator,
+)
 from .models import Brand, Category, Product
 from .serializers import BrandSerializer, CategorySerializer, ProductSerializer
 from rest_framework.response import Response
@@ -6,35 +11,40 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 
 
-@extend_schema(responses=CategorySerializer)
-class CategoryViewSet(ViewSet):
+class CategoryViewSet(ModelViewSet):
 
     queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
     def list(self, request):
-        serializer = CategorySerializer(self.queryset, many=True)
-        return Response(serializer.data)
+        paginator = CategoryPaginator()
+        paginated_products = paginator.paginate_queryset(self.queryset, request=request)
+        serializer = CategorySerializer(paginated_products, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
-@extend_schema(responses=BrandSerializer)
-class BrandViewSet(ViewSet):
+class BrandViewSet(ModelViewSet):
 
     queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
 
     def list(self, request):
-        serializer = BrandSerializer(self.queryset, many=True)
-        return Response(serializer.data)
+        paginator = BrandPaginator()
+        paginated_products = paginator.paginate_queryset(self.queryset, request=request)
+        serializer = BrandSerializer(paginated_products, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
-@extend_schema(responses=ProductSerializer)
-class ProductViewSet(ViewSet):
-
+class ProductViewSet(ModelViewSet):
     queryset = Product.objects.active()
     lookup_field = "slug"
+    serializer_class = ProductSerializer
 
     def list(self, request):
-        serializer = ProductSerializer(self.queryset, many=True)
-        return Response(serializer.data)
+        paginator = ProductPaginator()
+        paginated_products = paginator.paginate_queryset(self.queryset, request=request)
+        serializer = ProductSerializer(paginated_products, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     @action(
         methods=["get"],
@@ -43,10 +53,13 @@ class ProductViewSet(ViewSet):
         url_name="product_by_category",
     )
     def list_products_by_category(self, request, category=None):
-        serializer = ProductSerializer(
-            self.queryset.filter(category__name=category), many=True
+        paginator = ProductPaginator()
+        paginated_products = paginator.paginate_queryset(
+            self.queryset.filter(category__name=category), request=request
         )
-        return Response(serializer.data)
+        serializer = ProductSerializer(paginated_products, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(self.queryset.filter(slug=slug), many=True)

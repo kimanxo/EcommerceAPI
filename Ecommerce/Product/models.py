@@ -21,6 +21,7 @@ class Category(MPTTModel):
 
     class Meta:
         verbose_name_plural = "Categories"
+        ordering = ["created_at"]
 
     def __str__(self):
         return self.name
@@ -35,6 +36,9 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["created_at"]
 
 
 class Product(models.Model):
@@ -80,6 +84,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["created_at"]
 
 
 class ProductLine(models.Model):
