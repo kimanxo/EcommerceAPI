@@ -7,7 +7,6 @@ from Ecommerce.utils.paginators import (
 from .models import Brand, Category, Product
 from .serializers import BrandSerializer, CategorySerializer, ProductSerializer
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 
 
@@ -16,6 +15,7 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    # overriding the list method to implement pagination
     def list(self, request):
         paginator = CategoryPaginator()
         paginated_products = paginator.paginate_queryset(self.queryset, request=request)
@@ -28,6 +28,7 @@ class BrandViewSet(ModelViewSet):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
 
+    # overriding the list method to implement pagination
     def list(self, request):
         paginator = BrandPaginator()
         paginated_products = paginator.paginate_queryset(self.queryset, request=request)
@@ -40,6 +41,7 @@ class ProductViewSet(ModelViewSet):
     lookup_field = "slug"
     serializer_class = ProductSerializer
 
+    # overriding the list method to implement pagination
     def list(self, request):
         paginator = ProductPaginator()
         paginated_products = paginator.paginate_queryset(self.queryset, request=request)
@@ -52,6 +54,7 @@ class ProductViewSet(ModelViewSet):
         url_path=r"category/(?P<category>\w+)/all",
         url_name="product_by_category",
     )
+    # custom method to list products by category
     def list_products_by_category(self, request, category=None):
         paginator = ProductPaginator()
         paginated_products = paginator.paginate_queryset(

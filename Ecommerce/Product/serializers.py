@@ -1,4 +1,3 @@
-from itertools import product
 from rest_framework.serializers import ModelSerializer
 from .models import Category, Brand, Product, ProductLine
 from rest_framework import serializers
@@ -21,7 +20,7 @@ class BrandSerializer(ModelSerializer):
 
 
 class ProductLineSerializer(ModelSerializer):
-
+    # serializing the parent product name and id to output a verbose name instead of IDs or PKs
     parent_product_name = serializers.CharField(source="product.name")
     parent_product_id = serializers.IntegerField(source="product.pk")
 
@@ -39,7 +38,7 @@ class ProductLineSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
-
+    # utilizing nested serializers to fully serialize the product with all its relevant infos 
     brand = BrandSerializer()
     category = CategorySerializer()
     product_line = ProductLineSerializer(many=True)

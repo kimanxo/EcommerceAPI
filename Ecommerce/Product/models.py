@@ -1,6 +1,7 @@
-from enum import unique
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+
+# creating  a custom manager to filter out the active product lines .
 
 
 class ActiveManager(models.Manager):
@@ -77,7 +78,7 @@ class Product(models.Model):
         help_text="Product category",
     )
     is_active = models.BooleanField(default=False, help_text="is the product active")
-
+    # overriding the default manager with the custom manager
     objects = ActiveManager()
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -111,8 +112,12 @@ class ProductLine(models.Model):
         related_name="product_line",
     )
     is_active = models.BooleanField(default=False, help_text="is the product active")
+    # overriding the default manager with the custom manager
     objects = ActiveManager()
     order = models.PositiveIntegerField(
         unique=True, blank=False, null=False, help_text="product line order"
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.product.name
