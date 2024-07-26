@@ -1,5 +1,5 @@
 import factory
-from Ecommerce.Product.models import Category, Product, Brand
+from Ecommerce.Product.models import Category, Product, Brand, ProductLine
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -32,4 +32,15 @@ class ProductFactory(factory.django.DjangoModelFactory):
     is_digital = True
     brand = factory.SubFactory(BrandFactory)
     category = factory.SubFactory(CategoryFactory)
+    is_active = True
+
+
+class ProductLineFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLine
+
+    price = 100
+    sku = "E313"
+    stock_qty = 300
+    product = factory.SubFactory(ProductFactory)
     is_active = True

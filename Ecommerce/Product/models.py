@@ -1,5 +1,6 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from .fields import OrderField
 
 # creating  a custom manager to filter out the active product lines .
 
@@ -112,11 +113,14 @@ class ProductLine(models.Model):
         related_name="product_line",
     )
     is_active = models.BooleanField(default=False, help_text="is the product active")
+
+    order = OrderField(
+        unique_for_field="product",
+        blank=True,
+        help_text="product line order",
+    )
     # overriding the default manager with the custom manager
     objects = ActiveManager()
-    order = models.PositiveIntegerField(
-        unique=True, blank=False, null=False, help_text="product line order"
-    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
