@@ -1,3 +1,4 @@
+from os import name
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from .fields import OrderField
@@ -125,3 +126,26 @@ class ProductLine(models.Model):
 
     def __str__(self):
         return self.product.name
+
+
+class ProductImage(models.Model):
+    
+    alt_text = models.CharField(
+        max_length=256,
+        blank=True,
+        null=True,
+        unique=False,
+        help_text="Product image alt",
+    )
+    url = models.ImageField(upload_to=None,)
+    product_line = models.ForeignKey(
+        ProductLine,
+        on_delete=models.CASCADE,
+        help_text="Related product",
+        related_name="product_image",
+        default="img.jpg"
+    )
+    order = OrderField(unique_for_field="product_line", blank=True)
+
+    def __str__(self):
+        return self.alt_text

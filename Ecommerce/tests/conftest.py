@@ -7,7 +7,6 @@ register(CategoryFactory)
 register(BrandFactory)
 register(ProductFactory)
 register(ProductLineFactory)
-
 @fixture
 def rest_client():
     return APIClient

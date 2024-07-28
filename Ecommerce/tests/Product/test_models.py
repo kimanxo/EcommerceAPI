@@ -35,3 +35,6 @@ class TestProductLineModel:
         assert instance.sku == "E313"
         assert instance.stock_qty == 300
         assert instance.is_active
+
+
+

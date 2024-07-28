@@ -1,5 +1,5 @@
 import factory
-from Ecommerce.Product.models import Category, Product, Brand, ProductLine
+from Ecommerce.Product.models import Category, Product, Brand, ProductLine, ProductImage
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -44,3 +44,5 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     stock_qty = 300
     product = factory.SubFactory(ProductFactory)
     is_active = True
+
+

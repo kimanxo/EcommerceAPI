@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Category, Brand, Product, ProductLine
+from .models import Category, Brand, Product, ProductImage, ProductLine
 from rest_framework import serializers
 
 
@@ -19,7 +19,14 @@ class BrandSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class ProductImageSerializer(ModelSerializer):
+
+    class Meta:
+        model = ProductImage
+        exclude = ("id",)
+
 class ProductLineSerializer(ModelSerializer):
+    product_image   = ProductImageSerializer(many=True)
     # serializing the parent product name and id to output a verbose name instead of IDs or PKs
     parent_product_name = serializers.CharField(source="product.name")
     parent_product_id = serializers.IntegerField(source="product.pk")
@@ -32,6 +39,8 @@ class ProductLineSerializer(ModelSerializer):
             "sku",
             "stock_qty",
             "is_active",
+            "order",
+            "product_image",
             "parent_product_name",
             "parent_product_id",
         ]

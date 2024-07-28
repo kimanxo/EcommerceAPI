@@ -65,5 +65,5 @@ class ProductViewSet(ModelViewSet):
         return paginator.get_paginated_response(serializer.data)
 
     def retrieve(self, request, slug=None):
-        serializer = ProductSerializer(self.queryset.filter(slug=slug), many=True)
+        serializer = ProductSerializer(self.queryset.filter(slug=slug).select_related("category","brand").prefetch_related("product_line").prefetch_related("product_line__product_image"), many=True)
         return Response(serializer.data)
