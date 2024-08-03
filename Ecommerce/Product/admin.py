@@ -1,6 +1,14 @@
 from django.contrib import admin
 from django.urls import reverse
-from .models import Brand, Category, Product, ProductImage, ProductLine
+from .models import (
+    AttributeValue,
+    Brand,
+    Category,
+    Product,
+    ProductImage,
+    ProductLine,
+    Attribute,
+)
 from django.utils.safestring import mark_safe
 
 
@@ -8,7 +16,8 @@ from django.utils.safestring import mark_safe
 class EditLinkInline(object):
     def edit(self, instance):
         url = reverse(
-            f"admin:{instance._meta.app_label}_{instance._meta.model_name}_change",args=[instance.pk]
+            f"admin:{instance._meta.app_label}_{instance._meta.model_name}_change",
+            args=[instance.pk],
         )
         if instance.pk:
             link = mark_safe(f"<a href ='{url}'>Edit<a/>")
@@ -20,6 +29,11 @@ class EditLinkInline(object):
 class ProductLineInline(EditLinkInline, admin.TabularInline):
     model = ProductLine
     readonly_fields = ("edit",)
+
+
+class AttributeValueInline(admin.TabularInline):
+    model = AttributeValue.product_line_attr_value.through
+
 
 class ProductLineImageInline(admin.TabularInline):
     model = ProductImage
@@ -35,10 +49,13 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(ProductLine)
 class ProductLineAdmin(admin.ModelAdmin):
-    inlines = [ProductLineImageInline]
+    inlines = [ProductLineImageInline, AttributeValueInline]
 
 
 # registering models
 admin.site.register(Brand)
 admin.site.register(Category)
+admin.site.register(AttributeValue)
+admin.site.register(Attribute)
+
 # admin.site.register(ProductLine)

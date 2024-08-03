@@ -92,6 +92,21 @@ class Product(models.Model):
         ordering = ["created_at"]
 
 
+class Attribute(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class AttributeValue(models.Model):
+    attr_value = models.CharField(max_length=100)
+    attribute = models.ForeignKey(Attribute,related_name="attribute_value", help_text="attribute", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.attribute} - {self.attr_value}"
+
+
 class ProductLine(models.Model):
 
     price = models.DecimalField(
@@ -120,12 +135,31 @@ class ProductLine(models.Model):
         blank=True,
         help_text="product line order",
     )
+    attr_value = models.ManyToManyField(AttributeValue,through="ProductLineAttributeValue", related_name="product_line_attr_value")
     # overriding the default manager with the custom manager
     objects = ActiveManager()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.product.name
+
+
+class ProductLineAttributeValue(models.Model):
+    attr_value = models.ForeignKey(
+        AttributeValue,
+        related_name="attribute_value",
+        help_text="attribute",
+        on_delete=models.CASCADE,
+    )
+    product_line = models.ForeignKey(
+        ProductLine,
+        related_name="attr_product_line",
+        help_text="product line",
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("attr_value", "product_line")
 
 
 class ProductImage(models.Model):
